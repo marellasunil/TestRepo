@@ -1,0 +1,60 @@
+# Local FleetAMP runtime state
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+data/
+backups/
+snapshots/
+
+# Supervisor identity and generated configuration
+supervisor-storage/
+config/supervisor.yaml
+config/collector-base.yaml
+*.instance-id
+
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+*.secret
+*.token
+credentials/
+secrets/
+
+# Certificates and keys
+*.key
+*.pem
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.csr
+*.crt
+*.cer
+ca-bundle.*
+
+# Logs and runtime files
+*.log
+logs/
+*.pid
+*.sock
+tmp/
+.cache/
+
+# Local archives and binaries
+fleetamp
+opampsupervisor
+otelcol
+otelcol-contrib
+*.tar
+*.tar.gz
+*.zip
+*.rpm
+*.deb
+
+# Editor and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
