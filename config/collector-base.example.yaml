@@ -1,0 +1,51 @@
+# Safe base configuration for the one-agent pilot.
+# It collects only host CPU and memory metrics and writes them to local logs.
+# Add no production backend credentials to this repository.
+receivers:
+  hostmetrics:
+    collection_interval: 60s
+    scrapers:
+      cpu:
+        metrics:
+          system.cpu.utilization:
+            enabled: true
+      memory:
+        metrics:
+          system.memory.utilization:
+            enabled: true
+
+processors:
+  memory_limiter:
+    check_interval: 5s
+    limit_mib: 256
+    spike_limit_mib: 64
+  resource:
+    attributes:
+      - key: deployment.environment
+        value: enterprise-pilot
+        action: upsert
+      - key: service.name
+        value: otel-collector-agent
+        action: upsert
+  batch:
+    timeout: 10s
+    send_batch_size: 1024
+
+exporters:
+  debug:
+    verbosity: basic
+
+extensions:
+  health_check:
+    endpoint: 127.0.0.1:13134
+
+service:
+  extensions: [health_check]
+  pipelines:
+    metrics:
+      receivers: [hostmetrics]
+      processors: [memory_limiter, resource, batch]
+      exporters: [debug]
+  telemetry:
+    logs:
+      level: info
