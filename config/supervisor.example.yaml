@@ -1,0 +1,45 @@
+# Copy to /etc/opampsupervisor/supervisor.yaml and protect with mode 0600.
+# Replace every CHANGE_ME value on the host. Never commit the rendered file.
+server:
+  endpoint: "wss://CHANGE_ME_FLEETAMP_HOST/v1/opamp"
+  headers:
+    Authorization: "Bearer CHANGE_ME_LOAD_FROM_ENTERPRISE_SECRET_STORE"
+  tls:
+    insecure_skip_verify: false
+
+capabilities:
+  reports_effective_config: true
+  reports_own_metrics: true
+  reports_own_logs: true
+  reports_own_traces: true
+  reports_health: true
+  accepts_remote_config: true
+  reports_remote_config: true
+  reports_available_components: true
+
+agent:
+  executable: /opt/otelcol-contrib/otelcol-contrib
+  passthrough_logs: true
+  config_files:
+    - /etc/otelcol-contrib/collector-base.yaml
+  args: []
+  env: {}
+  description:
+    non_identifying_attributes:
+      # Keep this unique and unchanged across service/host restarts.
+      # Do not reuse it for another concurrently running Collector.
+      fleetamp.agent.id: enterprise-test-agent-01
+
+# This directory preserves the Supervisor identity and last known desired
+# configuration. It must survive process and host restarts.
+storage:
+  directory: /var/lib/opampsupervisor
+
+healthcheck:
+  endpoint: 127.0.0.1:13133
+
+telemetry:
+  logs:
+    level: info
+    output_paths:
+      - stderr
